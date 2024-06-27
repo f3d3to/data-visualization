@@ -1,0 +1,433 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+                <link href="lib/tom-select/tom-select.css" rel="stylesheet">
+                <script src="lib/tom-select/tom-select.complete.min.js"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 600px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+              <div id="filter-menu" class="card-header">
+                <div class="row no-gutters">
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="updateFilter(value, 'item')"
+                            id="select-item"
+                        >
+                        <option value="">Select a network item</option>
+                        <option value="edge">edge</option>
+                        <option value="node">node</option>
+                    </select>
+                  </div>
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="updateFilter(value, 'property')"
+                            id="select-property"
+                        >
+                        <option value="">Select a property...</option>
+                    </select>
+                  </div>
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            id="select-value"
+                        >
+                        <option value="">Select value(s)...</option>
+                    </select>
+                  </div>
+                  <div class="col-1 pb-2">
+                    <button type="button" class="btn btn-primary btn-block" onclick="highlightFilter(filter);">Filter</button>
+                  </div>
+                  <div class="col-2 pb-2">
+                    <button type="button" class="btn btn-primary btn-block" onclick="clearFilter(true)">Reset Selection</button>
+                  </div>
+                </div>
+              </div>
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+                  // explicitly using onItemAdd and this function as we need to save multiple values
+                  let updateValueFilter = function() {
+                      return function () {
+                      filter['value'].push(arguments[0])
+                      }
+                  }
+
+                  let valueControl = new TomSelect("#select-value",{
+                      maxItems: null,
+                      valueField: 'id',
+                      labelField: 'title',
+                      searchField: 'title',
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: updateValueFilter()
+                  });
+
+                  let addValues = function() {
+                      return function () {
+                          // clear the current value options and add the selected attribute values
+                          // tom-select handles duplicates
+                          let selectedProperty = arguments[0];
+                          valueControl.clear();
+                          valueControl.clearOptions();
+                          filter['value'] = []
+                          if (filter['item'] === 'node') {
+                              for (let each in allNodes) {
+                                  valueControl.addOption({
+                                      id:allNodes[each][selectedProperty],
+                                      title:allNodes[each][selectedProperty]
+                                  })
+                              }
+                          }
+                          else if (filter['item'] === 'edge') {
+                              for (let each in allEdges) {
+                                  valueControl.addOption({
+                                      id:allEdges[each][selectedProperty],
+                                      title:allEdges[each][selectedProperty]
+                                  })
+                              }
+                          }
+                      }
+                  };
+
+                  let propControl = new TomSelect("#select-property",{
+                      valueField: 'id',
+                      labelField: 'title',
+                      searchField: 'title',
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: addValues()
+                  });
+
+                  let addProperties = function() {
+                      return function () {
+                          // loops through the selected network item and adds the attributes to dropdown
+                          // tom-select handles duplicates
+                          clearFilter(false)
+                          if (arguments[0] === 'edge') {
+                              for (let each in allEdges) {
+                                  if (allEdges.hasOwnProperty(each)) {
+                                      for (let eachProp in allEdges[each]) {
+                                          if (allEdges[each].hasOwnProperty(eachProp)) {
+                                              propControl.addOption({id: eachProp, title: eachProp})
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                          else if (arguments[0] === 'node') {
+                              for (let each in allNodes) {
+                                  if (allNodes.hasOwnProperty(each)) {
+                                      for (let eachProp in allNodes[each]) {
+                                          if (allNodes[each].hasOwnProperty(eachProp)
+                                              && (eachProp !== 'hidden' && eachProp !== 'savedLabel'
+                                                  && eachProp !== 'hiddenLabel')) {
+                                              propControl.addOption({id: eachProp, title: eachProp})
+
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  };
+
+                  let itemControl = new TomSelect("#select-item",{
+                      create: false,
+                      sortField:{
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: addProperties()
+                  });
+
+                  function clearFilter(reset) {
+                      // utility function to clear all the selected filter options
+                      // if reset is set to true, the existing filter will be removed
+                      // else, only the dropdown options are cleared
+                      propControl.clear();
+                      propControl.clearOptions();
+                      valueControl.clear();
+                      valueControl.clearOptions();
+                      filter = {
+                          item : '',
+                          property : '',
+                          value : []
+                      }
+                      if (reset) {
+                          itemControl.clear();
+                          filterHighlight({nodes: []})
+                      }
+                  }
+
+                  function updateFilter(value, key) {
+                      // key could be 'item' or 'property' and value is as selected in dropdown
+                      filter[key] = value
+                  }
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "Country", "label": "Country", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Antigua and Barbuda", "label": "Antigua and Barbuda", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Argentina", "label": "Argentina", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Bahamas", "label": "Bahamas", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Barbados", "label": "Barbados", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Belize", "label": "Belize", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Bolivia", "label": "Bolivia", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Brazil", "label": "Brazil", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Chile", "label": "Chile", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Colombia", "label": "Colombia", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Costa Rica", "label": "Costa Rica", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Dominica", "label": "Dominica", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Ecuador", "label": "Ecuador", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "El Salvador", "label": "El Salvador", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Grenada", "label": "Grenada", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Guatemala", "label": "Guatemala", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Guyana", "label": "Guyana", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Haiti", "label": "Haiti", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Honduras", "label": "Honduras", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Jamaica", "label": "Jamaica", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Mexico", "label": "Mexico", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Nicaragua", "label": "Nicaragua", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Panama", "label": "Panama", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Paraguay", "label": "Paraguay", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Peru", "label": "Peru", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Dominican Republic", "label": "Dominican Republic", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Saint Kitts and Nevis", "label": "Saint Kitts and Nevis", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Saint Vincent and the Grenadines", "label": "Saint Vincent and the Grenadines", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Saint Lucia", "label": "Saint Lucia", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Suriname", "label": "Suriname", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Trinidad and Tobago", "label": "Trinidad and Tobago", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Uruguay", "label": "Uruguay", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Venezuela", "label": "Venezuela", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "LAC", "label": "LAC", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Dimension", "label": "Dimension", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Policy and Strategy", "label": "Policy and Strategy", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Legal Frameworks", "label": "Legal Frameworks", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Technologies", "label": "Technologies", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Culture and Society", "label": "Culture and Society", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Education", "label": "Education", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Factor", "label": "Factor", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Documented or Official National Cybersecurity Strategy", "label": "Documented or Official National Cybersecurity Strategy", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cyber Defense Consideration", "label": "Cyber Defense Consideration", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Legal Investigation", "label": "Legal Investigation", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Crisis Management", "label": "Crisis Management", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cybersecurity Mind-set", "label": "Cybersecurity Mind-set", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Privacy Online", "label": "Privacy Online", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cybersecurity Awareness", "label": "Cybersecurity Awareness", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Confidence and Trust on the Internet", "label": "Confidence and Trust on the Internet", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "National Availability of Cyber Education and Training", "label": "National Availability of Cyber Education and Training", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "National Development of Cybersecurity Education", "label": "National Development of Cybersecurity Education", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Training and Educational Initatives within Public and Private Sectors", "label": "Training and Educational Initatives within Public and Private Sectors", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cybersecurity Legal Frameworks", "label": "Cybersecurity Legal Frameworks", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Corporate Governance, Knowledge, and Standards", "label": "Corporate Governance, Knowledge, and Standards", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Responsible Reporting", "label": "Responsible Reporting", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Adherence to Standards", "label": "Adherence to Standards", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cybersecurity Coordinating Organizations", "label": "Cybersecurity Coordinating Organizations", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Incident Response", "label": "Incident Response", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "National Infrastructure Resilience", "label": "National Infrastructure Resilience", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Critical National Infrastructure (CNI) Protection", "label": "Critical National Infrastructure (CNI) Protection", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Digital Redundancy", "label": "Digital Redundancy", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cybersecurity Marketplace", "label": "Cybersecurity Marketplace", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Indicator", "label": "Indicator", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Strategy development", "label": "Strategy development", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Strategy", "label": "Strategy", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Organization ", "label": "Organization ", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Content", "label": "Content", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Courts", "label": "Courts", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Evaluation", "label": "Evaluation", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Coordination", "label": "Coordination", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Government", "label": "Government", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Private sector", "label": "Private sector", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Society", "label": "Society", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Privacy standards", "label": "Privacy standards", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Awareness raising", "label": "Awareness raising", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Trust in use of online services", "label": "Trust in use of online services", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Trust in e-government", "label": "Trust in e-government", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Trust in e-commerce", "label": "Trust in e-commerce", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Employee privacy", "label": "Employee privacy", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Training", "label": "Training", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "National development of cybersecurity education", "label": "National development of cybersecurity education", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "National development of cyber security education", "label": "National development of cyber security education", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Law enforcement ", "label": "Law enforcement ", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Training employees in cybersecurity", "label": "Training employees in cybersecurity", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Training employees in cyber security", "label": "Training employees in cyber security", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Legislative frameworks for ICT security", "label": "Legislative frameworks for ICT security", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Private and State owned companies\u0027 understanding of cybersecurity", "label": "Private and State owned companies\u0027 understanding of cybersecurity", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Privacy, data protection and other human rights", "label": "Privacy, data protection and other human rights", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Substantive cybercrime law", "label": "Substantive cybercrime law", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Procedural cybercrime law", "label": "Procedural cybercrime law", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Prosecution services", "label": "Prosecution services", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Responsible disclosure", "label": "Responsible disclosure", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Procurement", "label": "Procurement", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Implementation of standards and minimal acceptable practices", "label": "Implementation of standards and minimal acceptable practices", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Implementation of standards", "label": "Implementation of standards", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Software development", "label": "Software development", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Command and control center", "label": "Command and control center", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Organization", "label": "Organization", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Identification and designation", "label": "Identification and designation", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Incident response capacity", "label": "Incident response capacity", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Infrastructure technology", "label": "Infrastructure technology", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Planning ", "label": "Planning ", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "National resilience", "label": "National resilience", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Identification", "label": "Identification", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Response planning", "label": "Response planning", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Risk management", "label": "Risk management", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cybersecurity technologies", "label": "Cybersecurity technologies", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cybercrime insurance", "label": "Cybercrime insurance", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Indicator_Name", "label": "Indicator_Name", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Documented or Official National Cybersecurity Strategy: Strategy development", "label": "Documented or Official National Cybersecurity Strategy: Strategy development", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cyber Defense Consideration: Strategy", "label": "Cyber Defense Consideration: Strategy", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Documented or Official National Cybersecurity Strategy: Organization ", "label": "Documented or Official National Cybersecurity Strategy: Organization ", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Documented or Official National Cybersecurity Strategy: Content", "label": "Documented or Official National Cybersecurity Strategy: Content", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Legal Investigation: Courts", "label": "Legal Investigation: Courts", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cyber Defense Consideration: Organization ", "label": "Cyber Defense Consideration: Organization ", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Crisis Management: Evaluation", "label": "Crisis Management: Evaluation", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cyber Defense Consideration: Coordination", "label": "Cyber Defense Consideration: Coordination", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cybersecurity Mind-set: Government", "label": "Cybersecurity Mind-set: Government", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cybersecurity Mind-set: Private sector", "label": "Cybersecurity Mind-set: Private sector", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cybersecurity Mind-set: Society", "label": "Cybersecurity Mind-set: Society", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Privacy Online: Privacy standards", "label": "Privacy Online: Privacy standards", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cybersecurity Awareness: Awareness raising", "label": "Cybersecurity Awareness: Awareness raising", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Confidence and Trust on the Internet: Trust in use of online services", "label": "Confidence and Trust on the Internet: Trust in use of online services", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Confidence and Trust on the Internet: Trust in e-government", "label": "Confidence and Trust on the Internet: Trust in e-government", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Confidence and Trust on the Internet: Trust in e-commerce", "label": "Confidence and Trust on the Internet: Trust in e-commerce", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Privacy Online: Employee privacy", "label": "Privacy Online: Employee privacy", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "National Availability of Cyber Education and Training: Education", "label": "National Availability of Cyber Education and Training: Education", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "National Availability of Cyber Education and Training: Training", "label": "National Availability of Cyber Education and Training: Training", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "National Development of Cybersecurity Education: National development of cybersecurity education", "label": "National Development of Cybersecurity Education: National development of cybersecurity education", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "National Development of Cybersecurity Education: National development of cyber security education", "label": "National Development of Cybersecurity Education: National development of cyber security education", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Legal Investigation: Law enforcement ", "label": "Legal Investigation: Law enforcement ", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Training and Educational Initatives within Public and Private Sectors: Training employees in cybersecurity", "label": "Training and Educational Initatives within Public and Private Sectors: Training employees in cybersecurity", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Training and Educational Initatives within Public and Private Sectors: Training employees in cyber security", "label": "Training and Educational Initatives within Public and Private Sectors: Training employees in cyber security", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cybersecurity Legal Frameworks: Legislative frameworks for ICT security", "label": "Cybersecurity Legal Frameworks: Legislative frameworks for ICT security", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Corporate Governance, Knowledge, and Standards: Private and State owned companies\u0027 understanding of cybersecurity", "label": "Corporate Governance, Knowledge, and Standards: Private and State owned companies\u0027 understanding of cybersecurity", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cybersecurity Legal Frameworks: Privacy, data protection and other human rights", "label": "Cybersecurity Legal Frameworks: Privacy, data protection and other human rights", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cybersecurity Legal Frameworks: Substantive cybercrime law", "label": "Cybersecurity Legal Frameworks: Substantive cybercrime law", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cybersecurity Legal Frameworks: Procedural cybercrime law", "label": "Cybersecurity Legal Frameworks: Procedural cybercrime law", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Legal Investigation: Prosecution services", "label": "Legal Investigation: Prosecution services", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Responsible Reporting: Responsible disclosure", "label": "Responsible Reporting: Responsible disclosure", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Adherence to Standards: Procurement", "label": "Adherence to Standards: Procurement", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Adherence to Standards: Implementation of standards and minimal acceptable practices", "label": "Adherence to Standards: Implementation of standards and minimal acceptable practices", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Adherence to Standards: Implementation of standards", "label": "Adherence to Standards: Implementation of standards", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Adherence to Standards: Software development", "label": "Adherence to Standards: Software development", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cybersecurity Coordinating Organizations: Command and control center", "label": "Cybersecurity Coordinating Organizations: Command and control center", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Incident Response: Organization", "label": "Incident Response: Organization", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Incident Response: Identification and designation", "label": "Incident Response: Identification and designation", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cybersecurity Coordinating Organizations: Incident response capacity", "label": "Cybersecurity Coordinating Organizations: Incident response capacity", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Incident Response: Coordination", "label": "Incident Response: Coordination", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "National Infrastructure Resilience: Infrastructure technology", "label": "National Infrastructure Resilience: Infrastructure technology", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Crisis Management: Planning ", "label": "Crisis Management: Planning ", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "National Infrastructure Resilience: National resilience", "label": "National Infrastructure Resilience: National resilience", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Critical National Infrastructure (CNI) Protection: Identification", "label": "Critical National Infrastructure (CNI) Protection: Identification", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Critical National Infrastructure (CNI) Protection: Organization", "label": "Critical National Infrastructure (CNI) Protection: Organization", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Critical National Infrastructure (CNI) Protection: Response planning", "label": "Critical National Infrastructure (CNI) Protection: Response planning", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Critical National Infrastructure (CNI) Protection: Coordination", "label": "Critical National Infrastructure (CNI) Protection: Coordination", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Critical National Infrastructure (CNI) Protection: Risk management", "label": "Critical National Infrastructure (CNI) Protection: Risk management", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Digital Redundancy: Planning ", "label": "Digital Redundancy: Planning ", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Digital Redundancy: Organization", "label": "Digital Redundancy: Organization", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cybersecurity Marketplace: Cybersecurity technologies", "label": "Cybersecurity Marketplace: Cybersecurity technologies", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cybersecurity Marketplace: Cybercrime insurance", "label": "Cybersecurity Marketplace: Cybercrime insurance", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Year", "label": "Year", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": 2015, "label": 2015, "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Nivel_de_madurez_texto_EN", "label": "Nivel_de_madurez_texto_EN", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Startup", "label": "Startup", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Formative", "label": "Formative", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Established", "label": "Established", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Stategic", "label": "Stategic", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Dynamic", "label": "Dynamic", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Regional Average", "label": "Regional Average", "shape": "dot", "size": 10}]);
+                  edges = new vis.DataSet([{"from": "Country", "to": "Antigua and Barbuda", "width": 1}, {"from": "Country", "to": "Argentina", "width": 1}, {"from": "Country", "to": "Bahamas", "width": 1}, {"from": "Country", "to": "Barbados", "width": 1}, {"from": "Country", "to": "Belize", "width": 1}, {"from": "Country", "to": "Bolivia", "width": 1}, {"from": "Country", "to": "Brazil", "width": 1}, {"from": "Country", "to": "Chile", "width": 1}, {"from": "Country", "to": "Colombia", "width": 1}, {"from": "Country", "to": "Costa Rica", "width": 1}, {"from": "Country", "to": "Dominica", "width": 1}, {"from": "Country", "to": "Ecuador", "width": 1}, {"from": "Country", "to": "El Salvador", "width": 1}, {"from": "Country", "to": "Grenada", "width": 1}, {"from": "Country", "to": "Guatemala", "width": 1}, {"from": "Country", "to": "Guyana", "width": 1}, {"from": "Country", "to": "Haiti", "width": 1}, {"from": "Country", "to": "Honduras", "width": 1}, {"from": "Country", "to": "Jamaica", "width": 1}, {"from": "Country", "to": "Mexico", "width": 1}, {"from": "Country", "to": "Nicaragua", "width": 1}, {"from": "Country", "to": "Panama", "width": 1}, {"from": "Country", "to": "Paraguay", "width": 1}, {"from": "Country", "to": "Peru", "width": 1}, {"from": "Country", "to": "Dominican Republic", "width": 1}, {"from": "Country", "to": "Saint Kitts and Nevis", "width": 1}, {"from": "Country", "to": "Saint Vincent and the Grenadines", "width": 1}, {"from": "Country", "to": "Saint Lucia", "width": 1}, {"from": "Country", "to": "Suriname", "width": 1}, {"from": "Country", "to": "Trinidad and Tobago", "width": 1}, {"from": "Country", "to": "Uruguay", "width": 1}, {"from": "Country", "to": "Venezuela", "width": 1}, {"from": "Country", "to": "LAC", "width": 1}, {"from": "Dimension", "to": "Policy and Strategy", "width": 1}, {"from": "Dimension", "to": "Legal Frameworks", "width": 1}, {"from": "Dimension", "to": "Technologies", "width": 1}, {"from": "Dimension", "to": "Culture and Society", "width": 1}, {"from": "Dimension", "to": "Education", "width": 1}, {"from": "Factor", "to": "Documented or Official National Cybersecurity Strategy", "width": 1}, {"from": "Factor", "to": "Cyber Defense Consideration", "width": 1}, {"from": "Factor", "to": "Legal Investigation", "width": 1}, {"from": "Factor", "to": "Crisis Management", "width": 1}, {"from": "Factor", "to": "Cybersecurity Mind-set", "width": 1}, {"from": "Factor", "to": "Privacy Online", "width": 1}, {"from": "Factor", "to": "Cybersecurity Awareness", "width": 1}, {"from": "Factor", "to": "Confidence and Trust on the Internet", "width": 1}, {"from": "Factor", "to": "National Availability of Cyber Education and Training", "width": 1}, {"from": "Factor", "to": "National Development of Cybersecurity Education", "width": 1}, {"from": "Factor", "to": "Training and Educational Initatives within Public and Private Sectors", "width": 1}, {"from": "Factor", "to": "Cybersecurity Legal Frameworks", "width": 1}, {"from": "Factor", "to": "Corporate Governance, Knowledge, and Standards", "width": 1}, {"from": "Factor", "to": "Responsible Reporting", "width": 1}, {"from": "Factor", "to": "Adherence to Standards", "width": 1}, {"from": "Factor", "to": "Cybersecurity Coordinating Organizations", "width": 1}, {"from": "Factor", "to": "Incident Response", "width": 1}, {"from": "Factor", "to": "National Infrastructure Resilience", "width": 1}, {"from": "Factor", "to": "Critical National Infrastructure (CNI) Protection", "width": 1}, {"from": "Factor", "to": "Digital Redundancy", "width": 1}, {"from": "Factor", "to": "Cybersecurity Marketplace", "width": 1}, {"from": "Indicator", "to": "Strategy development", "width": 1}, {"from": "Indicator", "to": "Strategy", "width": 1}, {"from": "Indicator", "to": "Organization ", "width": 1}, {"from": "Indicator", "to": "Content", "width": 1}, {"from": "Indicator", "to": "Courts", "width": 1}, {"from": "Indicator", "to": "Evaluation", "width": 1}, {"from": "Indicator", "to": "Coordination", "width": 1}, {"from": "Indicator", "to": "Government", "width": 1}, {"from": "Indicator", "to": "Private sector", "width": 1}, {"from": "Indicator", "to": "Society", "width": 1}, {"from": "Indicator", "to": "Privacy standards", "width": 1}, {"from": "Indicator", "to": "Awareness raising", "width": 1}, {"from": "Indicator", "to": "Trust in use of online services", "width": 1}, {"from": "Indicator", "to": "Trust in e-government", "width": 1}, {"from": "Indicator", "to": "Trust in e-commerce", "width": 1}, {"from": "Indicator", "to": "Employee privacy", "width": 1}, {"from": "Indicator", "to": "Education", "width": 1}, {"from": "Indicator", "to": "Training", "width": 1}, {"from": "Indicator", "to": "National development of cybersecurity education", "width": 1}, {"from": "Indicator", "to": "National development of cyber security education", "width": 1}, {"from": "Indicator", "to": "Law enforcement ", "width": 1}, {"from": "Indicator", "to": "Training employees in cybersecurity", "width": 1}, {"from": "Indicator", "to": "Training employees in cyber security", "width": 1}, {"from": "Indicator", "to": "Legislative frameworks for ICT security", "width": 1}, {"from": "Indicator", "to": "Private and State owned companies\u0027 understanding of cybersecurity", "width": 1}, {"from": "Indicator", "to": "Privacy, data protection and other human rights", "width": 1}, {"from": "Indicator", "to": "Substantive cybercrime law", "width": 1}, {"from": "Indicator", "to": "Procedural cybercrime law", "width": 1}, {"from": "Indicator", "to": "Prosecution services", "width": 1}, {"from": "Indicator", "to": "Responsible disclosure", "width": 1}, {"from": "Indicator", "to": "Procurement", "width": 1}, {"from": "Indicator", "to": "Implementation of standards and minimal acceptable practices", "width": 1}, {"from": "Indicator", "to": "Implementation of standards", "width": 1}, {"from": "Indicator", "to": "Software development", "width": 1}, {"from": "Indicator", "to": "Command and control center", "width": 1}, {"from": "Indicator", "to": "Organization", "width": 1}, {"from": "Indicator", "to": "Identification and designation", "width": 1}, {"from": "Indicator", "to": "Incident response capacity", "width": 1}, {"from": "Indicator", "to": "Infrastructure technology", "width": 1}, {"from": "Indicator", "to": "Planning ", "width": 1}, {"from": "Indicator", "to": "National resilience", "width": 1}, {"from": "Indicator", "to": "Identification", "width": 1}, {"from": "Indicator", "to": "Response planning", "width": 1}, {"from": "Indicator", "to": "Risk management", "width": 1}, {"from": "Indicator", "to": "Cybersecurity technologies", "width": 1}, {"from": "Indicator", "to": "Cybercrime insurance", "width": 1}, {"from": "Indicator_Name", "to": "Documented or Official National Cybersecurity Strategy: Strategy development", "width": 1}, {"from": "Indicator_Name", "to": "Cyber Defense Consideration: Strategy", "width": 1}, {"from": "Indicator_Name", "to": "Documented or Official National Cybersecurity Strategy: Organization ", "width": 1}, {"from": "Indicator_Name", "to": "Documented or Official National Cybersecurity Strategy: Content", "width": 1}, {"from": "Indicator_Name", "to": "Legal Investigation: Courts", "width": 1}, {"from": "Indicator_Name", "to": "Cyber Defense Consideration: Organization ", "width": 1}, {"from": "Indicator_Name", "to": "Crisis Management: Evaluation", "width": 1}, {"from": "Indicator_Name", "to": "Cyber Defense Consideration: Coordination", "width": 1}, {"from": "Indicator_Name", "to": "Cybersecurity Mind-set: Government", "width": 1}, {"from": "Indicator_Name", "to": "Cybersecurity Mind-set: Private sector", "width": 1}, {"from": "Indicator_Name", "to": "Cybersecurity Mind-set: Society", "width": 1}, {"from": "Indicator_Name", "to": "Privacy Online: Privacy standards", "width": 1}, {"from": "Indicator_Name", "to": "Cybersecurity Awareness: Awareness raising", "width": 1}, {"from": "Indicator_Name", "to": "Confidence and Trust on the Internet: Trust in use of online services", "width": 1}, {"from": "Indicator_Name", "to": "Confidence and Trust on the Internet: Trust in e-government", "width": 1}, {"from": "Indicator_Name", "to": "Confidence and Trust on the Internet: Trust in e-commerce", "width": 1}, {"from": "Indicator_Name", "to": "Privacy Online: Employee privacy", "width": 1}, {"from": "Indicator_Name", "to": "National Availability of Cyber Education and Training: Education", "width": 1}, {"from": "Indicator_Name", "to": "National Availability of Cyber Education and Training: Training", "width": 1}, {"from": "Indicator_Name", "to": "National Development of Cybersecurity Education: National development of cybersecurity education", "width": 1}, {"from": "Indicator_Name", "to": "National Development of Cybersecurity Education: National development of cyber security education", "width": 1}, {"from": "Indicator_Name", "to": "Legal Investigation: Law enforcement ", "width": 1}, {"from": "Indicator_Name", "to": "Training and Educational Initatives within Public and Private Sectors: Training employees in cybersecurity", "width": 1}, {"from": "Indicator_Name", "to": "Training and Educational Initatives within Public and Private Sectors: Training employees in cyber security", "width": 1}, {"from": "Indicator_Name", "to": "Cybersecurity Legal Frameworks: Legislative frameworks for ICT security", "width": 1}, {"from": "Indicator_Name", "to": "Corporate Governance, Knowledge, and Standards: Private and State owned companies\u0027 understanding of cybersecurity", "width": 1}, {"from": "Indicator_Name", "to": "Cybersecurity Legal Frameworks: Privacy, data protection and other human rights", "width": 1}, {"from": "Indicator_Name", "to": "Cybersecurity Legal Frameworks: Substantive cybercrime law", "width": 1}, {"from": "Indicator_Name", "to": "Cybersecurity Legal Frameworks: Procedural cybercrime law", "width": 1}, {"from": "Indicator_Name", "to": "Legal Investigation: Prosecution services", "width": 1}, {"from": "Indicator_Name", "to": "Responsible Reporting: Responsible disclosure", "width": 1}, {"from": "Indicator_Name", "to": "Adherence to Standards: Procurement", "width": 1}, {"from": "Indicator_Name", "to": "Adherence to Standards: Implementation of standards and minimal acceptable practices", "width": 1}, {"from": "Indicator_Name", "to": "Adherence to Standards: Implementation of standards", "width": 1}, {"from": "Indicator_Name", "to": "Adherence to Standards: Software development", "width": 1}, {"from": "Indicator_Name", "to": "Cybersecurity Coordinating Organizations: Command and control center", "width": 1}, {"from": "Indicator_Name", "to": "Incident Response: Organization", "width": 1}, {"from": "Indicator_Name", "to": "Incident Response: Identification and designation", "width": 1}, {"from": "Indicator_Name", "to": "Cybersecurity Coordinating Organizations: Incident response capacity", "width": 1}, {"from": "Indicator_Name", "to": "Incident Response: Coordination", "width": 1}, {"from": "Indicator_Name", "to": "National Infrastructure Resilience: Infrastructure technology", "width": 1}, {"from": "Indicator_Name", "to": "Crisis Management: Planning ", "width": 1}, {"from": "Indicator_Name", "to": "National Infrastructure Resilience: National resilience", "width": 1}, {"from": "Indicator_Name", "to": "Critical National Infrastructure (CNI) Protection: Identification", "width": 1}, {"from": "Indicator_Name", "to": "Critical National Infrastructure (CNI) Protection: Organization", "width": 1}, {"from": "Indicator_Name", "to": "Critical National Infrastructure (CNI) Protection: Response planning", "width": 1}, {"from": "Indicator_Name", "to": "Critical National Infrastructure (CNI) Protection: Coordination", "width": 1}, {"from": "Indicator_Name", "to": "Critical National Infrastructure (CNI) Protection: Risk management", "width": 1}, {"from": "Indicator_Name", "to": "Digital Redundancy: Planning ", "width": 1}, {"from": "Indicator_Name", "to": "Digital Redundancy: Organization", "width": 1}, {"from": "Indicator_Name", "to": "Cybersecurity Marketplace: Cybersecurity technologies", "width": 1}, {"from": "Indicator_Name", "to": "Cybersecurity Marketplace: Cybercrime insurance", "width": 1}, {"from": "Year", "to": 2015, "width": 1}, {"from": "Nivel_de_madurez_texto_EN", "to": "Startup", "width": 1}, {"from": "Nivel_de_madurez_texto_EN", "to": "Formative", "width": 1}, {"from": "Nivel_de_madurez_texto_EN", "to": "Established", "width": 1}, {"from": "Nivel_de_madurez_texto_EN", "to": "Stategic", "width": 1}, {"from": "Nivel_de_madurez_texto_EN", "to": "Dynamic", "width": 1}, {"from": "Nivel_de_madurez_texto_EN", "to": "Regional Average", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
